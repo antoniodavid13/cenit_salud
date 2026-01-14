@@ -44,10 +44,7 @@ body {
 margin: 0;
     padding: 0;
     width: 100%;
-    min-height: 100vh;      /* Ocupa todo el alto de la pantalla */
-    display: flex;          /* Activa el modo flexible */
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center;     /* Centra verticalmente */
+    min-height: 100vh;      /* Ocupa todo el alto de la pantalla */    /* Centra verticalmente */
     background-color: var(--cream);
 }
     
