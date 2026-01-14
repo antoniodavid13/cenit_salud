@@ -105,7 +105,7 @@ def get_index(request: Request):
 
     # 3️⃣ Enviamos a la plantilla
     return templates.TemplateResponse(
-        "pages/mantenimiento.html",
+        "pages/index.html",
         {
             "request": request,
             "medicos": medicos
