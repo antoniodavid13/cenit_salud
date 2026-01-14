@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitaClinic | Centro de Salud Integral</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a href="#" class="navbar-logo">
+            <div class="logo-icon"></div>
+            <span class="logo-text">VitaClinic</span>
+        </a>
+        <div class="navbar-links">
+            <a href="#inicio" class="nav-link active">Inicio</a>
+            <a href="#servicios" class="nav-link">Servicios</a>
+            <a href="#doctores" class="nav-link">Doctores</a>
+            <a href="#testimonios" class="nav-link">Testimonios</a>
+            <a href="#contacto" class="nav-link">Contacto</a>
+        </div>
+        <a href="#cita" class="navbar-cta">Agendar Cita</a>
+    </nav>
+
+    <!-- HERO CAROUSEL -->
+    <section class="hero-section" id="inicio">
+        <div class="hero-carousel">
+            <div class="hero-slide active">
+                <div class="hero-slide-bg"></div>
+                <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    <div class="hero-badge">✨ Centro de Salud #1 en la Región</div>
+                    <h1 class="hero-title">Tu Salud,<br>Nuestra Pasión</h1>
+                    <p class="hero-subtitle">Brindamos atención médica de excelencia con tecnología de vanguardia y un equipo humano comprometido con tu bienestar.</p>
+                    <div class="hero-buttons">
+                        <a href="#cita" class="btn-primary">Agendar Cita →</a>
+                        <a href="#servicios" class="btn-secondary">Conocer Más</a>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-slide">
+                <div class="hero-slide-bg"></div>
+                <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    <div class="hero-badge">🏆 +20 Años de Experiencia</div>
+                    <h1 class="hero-title">Especialistas<br>de Confianza</h1>
+                    <p class="hero-subtitle">Contamos con más de 50 médicos especialistas certificados, dedicados a proporcionarte el mejor diagnóstico y tratamiento.</p>
+                    <div class="hero-buttons">
+                        <a href="#doctores" class="btn-primary">Ver Equipo →</a>
+                        <a href="#testimonios" class="btn-secondary">Testimonios</a>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-slide">
+                <div class="hero-slide-bg"></div>
+                <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    <div class="hero-badge">🌿 Medicina Integral</div>
+                    <h1 class="hero-title">Cuidado<br>Personalizado</h1>
+                    <p class="hero-subtitle">Cada paciente es único. Diseñamos planes de tratamiento individualizados que se adaptan a tus necesidades específicas.</p>
+                    <div class="hero-buttons">
+                        <a href="#contacto" class="btn-primary">Contáctanos →</a>
+                        <a href="#servicios" class="btn-secondary">Servicios</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-arrows">
+            <div class="hero-arrow" onclick="changeHeroSlide(-1)">←</div>
+            <div class="hero-arrow" onclick="changeHeroSlide(1)">→</div>
+        </div>
+        <div class="hero-controls">
+            <div class="hero-dot active" onclick="goToHeroSlide(0)"></div>
+            <div class="hero-dot" onclick="goToHeroSlide(1)"></div>
+            <div class="hero-dot" onclick="goToHeroSlide(2)"></div>
+        </div>
+    </section>
+
+    <!-- SERVICES SECTION -->
+    <section class="services-section" id="servicios">
+        <div class="section-header">
+            <span class="section-tag">Nuestros Servicios</span>
+            <h2 class="section-title">Atención Médica Integral</h2>
+            <p class="section-subtitle">Ofrecemos una amplia gama de servicios médicos especializados para cuidar de ti y tu familia.</p>
+        </div>
+        <div class="services-carousel-container">
+            <div class="services-carousel" id="servicesCarousel">
+                <div class="service-card">
+                    <div class="service-icon">🩺</div>
+                    <h3>Medicina General</h3>
+                    <p>Consultas médicas integrales con diagnóstico preciso y tratamiento personalizado para todas las edades.</p>
+                    <a href="#" class="service-link">Más información →</a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">❤️</div>
+                    <h3>Cardiología</h3>
+                    <p>Evaluación completa del sistema cardiovascular con tecnología de última generación.</p>
+                    <a href="#" class="service-link">Más información →</a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🦴</div>
+                    <h3>Traumatología</h3>
+                    <p>Especialistas en lesiones óseas, articulares y musculares con tratamientos avanzados.</p>
+                    <a href="#" class="service-link">Más información →</a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">👶</div>
+                    <h3>Pediatría</h3>
+                    <p>Cuidado integral para los más pequeños con un enfoque cálido y profesional.</p>
+                    <a href="#" class="service-link">Más información →</a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🧠</div>
+                    <h3>Neurología</h3>
+                    <p>Diagnóstico y tratamiento de trastornos del sistema nervioso central y periférico.</p>
+                    <a href="#" class="service-link">Más información →</a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔬</div>
+                    <h3>Laboratorio</h3>
+                    <p>Análisis clínicos con resultados rápidos y precisos utilizando equipos de alta tecnología.</p>
+                    <a href="#" class="service-link">Más información →</a>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-nav">
+            <button class="carousel-btn" onclick="moveServicesCarousel(-1)">←</button>
+            <button class="carousel-btn" onclick="moveServicesCarousel(1)">→</button>
+        </div>
+    </section>
+
+    <!-- DOCTORS SECTION -->
+<section class="doctors-section" id="doctores">
+        <div class="section-header">
+            <span class="section-tag">Nuestro Equipo</span>
+            <h2 class="section-title">Especialistas Certificados</h2>
+            <div style="margin-top: 20px;">
+                <a href="/medico/nuevo" class="btn-primary" style="padding: 10px 20px;">+ Añadir Nuevo Médico</a>
+            </div>
+        </div>
+
+        <div class="doctors-carousel-container">
+            <div class="doctors-carousel" id="doctorsCarousel">
+                
+                {% for medico in medicos %}
+                <div class="doctor-card" id="medico-{{ medico.id }}">
+                    <div class="doctor-image">
+                        {{ "👨‍⚕️" if "Dr." in medico.nombre else "👩‍⚕️" }}
+                    </div>
+                    <h3>{{ medico.nombre }}</h3>
+                    <p class="doctor-specialty">{{ medico.especilidad }}</p>
+                    
+                    <div class="doctor-actions">
+                        <a href="/medico/editar/{{ medico.id }}" class="btn-edit">Editar</a>
+                        <button onclick="eliminarMedico({{ medico.id }})" class="btn-delete">Eliminar</button>
+                    </div>
+                </div>
+                {% else %}
+                <p>No hay médicos registrados actualmente.</p>
+                {% endfor %}
+
+            </div>
+        </div>
+        
+        <div class="carousel-nav">
+            <button class="carousel-btn" onclick="moveDoctorsCarousel(-1)">←</button>
+            <button class="carousel-btn" onclick="moveDoctorsCarousel(1)">→</button>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS SECTION -->
+    <section class="testimonials-section" id="testimonios">
+        <div class="section-header">
+            <span class="section-tag">Testimonios</span>
+            <h2 class="section-title">Lo que Dicen Nuestros Pacientes</h2>
+            <p class="section-subtitle">La satisfacción de nuestros pacientes es nuestra mayor recompensa.</p>
+        </div>
+        <div class="testimonials-carousel-container">
+            <div class="testimonials-carousel">
+                <div class="testimonial-slide active">
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">"La atención que recibí en VitaClinic superó todas mis expectativas. El equipo médico es excepcional y las instalaciones son de primer nivel. Me sentí cuidada en todo momento."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">👩</div>
+                            <div class="author-info">
+                                <h4>Laura Martínez</h4>
+                                <span>Paciente de Cardiología</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-slide">
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">"Llevé a mi hijo a pediatría y quedé encantada con la Dra. García. Su paciencia y profesionalismo hicieron que mi pequeño se sintiera tranquilo durante toda la consulta."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">👨</div>
+                            <div class="author-info">
+                                <h4>Miguel Rodríguez</h4>
+                                <span>Padre de paciente</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-slide">
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">"Después de mi cirugía de rodilla, el seguimiento y rehabilitación fueron impecables. Hoy puedo volver a hacer deporte gracias al increíble equipo de traumatología."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">👨</div>
+                            <div class="author-info">
+                                <h4>Carlos Fernández</h4>
+                                <span>Paciente de Traumatología</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-dots">
+                <div class="testimonial-dot active" onclick="goToTestimonial(0)"></div>
+                <div class="testimonial-dot" onclick="goToTestimonial(1)"></div>
+                <div class="testimonial-dot" onclick="goToTestimonial(2)"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS SECTION -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">25K+</div>
+                <div class="stat-label">Pacientes Atendidos</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Médicos Especialistas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">20+</div>
+                <div class="stat-label">Años de Experiencia</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Satisfacción</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="cta-section" id="cita">
+        <div class="cta-box">
+            <div class="cta-content">
+                <h2 class="cta-title">¿Listo para Cuidar tu Salud?</h2>
+                <p class="cta-text">Agenda tu cita hoy mismo y da el primer paso hacia una vida más saludable. Nuestro equipo está listo para atenderte.</p>
+                <a href="#contacto" class="cta-button">
+                    <span>Agendar Mi Cita</span>
+                    <span>→</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer" id="contacto">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <span class="logo-text" style="font-family: 'Playfair Display', serif;">VitaClinic</span>
+                <p>Centro de salud integral comprometido con tu bienestar. Más de 20 años brindando atención médica de excelencia.</p>
+                <div class="footer-social">
+                    <a href="#">f</a>
+                    <a href="#">in</a>
+                    <a href="#">ig</a>
+                    <a href="#">yt</a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h4>Servicios</h4>
+                <ul>
+                    <li><a href="#">Medicina General</a></li>
+                    <li><a href="#">Cardiología</a></li>
+                    <li><a href="#">Traumatología</a></li>
+                    <li><a href="#">Pediatría</a></li>
+                    <li><a href="#">Neurología</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Clínica</h4>
+                <ul>
+                    <li><a href="#">Sobre Nosotros</a></li>
+                    <li><a href="#">Nuestro Equipo</a></li>
+                    <li><a href="#">Instalaciones</a></li>
+                    <li><a href="#">Testimonios</a></li>
+                    <li><a href="#">Blog de Salud</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Contacto</h4>
+                <ul>
+                    <li><a href="#">📍 Av. Principal 1234</a></li>
+                    <li><a href="#">📞 +1 234 567 890</a></li>
+                    <li><a href="#">✉️ info@vitaclinic.com</a></li>
+                    <li><a href="#">🕐 Lun-Vie: 8am - 8pm</a></li>
+                    <li><a href="#">🕐 Sáb: 9am - 2pm</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 VitaClinic. Todos los derechos reservados. | Política de Privacidad | Términos de Servicio</p>
+        </div>
+    </footer>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
