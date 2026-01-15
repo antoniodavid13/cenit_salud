@@ -6,26 +6,27 @@ from pydantic import BaseModel, EmailStr, field_validator, ValidationError
 from typing import Optional, List
 import re
 
-# Importamos las funciones que consultan/insertan/eliminan en MySQL
 from app.database import (
     fetch_all_medicos, 
     insert_medico, 
     delete_medico,
-    fetch_cliente_by_id,
-    update_cliente
+    fetch_medico_by_id,
+    update_medico
 )
 
 
-# Modelo base con validaciones comunes
-class ClienteBase(BaseModel):
+# ==================== MODELOS PYDANTIC ====================
+
+class MedicoBase(BaseModel):
+    """Modelo base con validaciones para médicos"""
     nombre: str
-    especilidad: str
+    especialidad: str
     email: EmailStr
     
-    @field_validator('nombre','especilidad')
+    @field_validator('nombre', 'especialidad')
     @classmethod
-    def validar_nombre_apellido(cls, v: str) -> str:
-        """Valida que nombre y apellido tengan formato correcto."""
+    def validar_campos_texto(cls, v: str) -> str:
+        """Valida que nombre y especialidad tengan formato correcto."""
         if not v or not v.strip():
             raise ValueError('El campo no puede estar vacío')
         
@@ -41,69 +42,77 @@ class ClienteBase(BaseModel):
         if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$', v):
             raise ValueError('Solo se permiten letras y espacios')
         
-        return v.title()  # Capitaliza cada palabra
-    
+        return v.title()
 
 
-# Modelo para lectura de BD (sin validaciones estrictas, acepta datos históricos)
-class ClienteDB(BaseModel):
+class MedicoCreate(MedicoBase):
+    """Modelo para crear médico (sin ID)"""
+    pass
+
+
+class MedicoUpdate(MedicoBase):
+    """Modelo para actualizar médico (sin ID)"""
+    pass
+
+
+class MedicoDB(BaseModel):
+    """Modelo para lectura de BD (sin validaciones estrictas)"""
     id: int
     nombre: str
-    especilidad: str
+    especialidad: str
     email: str
 
 
+# ==================== CONFIGURACIÓN FASTAPI ====================
 
-# Modelo para crear cliente (sin ID)
-class ClienteCreate(ClienteBase):
-    pass
-
-
-# Modelo para actualizar cliente (sin ID)
-class ClienteUpdate(ClienteBase):
-    pass
-
-
-# Modelo completo de Cliente (con ID y validaciones)
-class Cliente(ClienteBase):
-    id: int
-
-
-app = FastAPI(title="SumaAPI")
+app = FastAPI(title="VitaClinic API")
 
 # Servir archivos estáticos
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-# Motor de plantillas
+# Motor de plantillas Jinja2
 templates = Jinja2Templates(directory="app/templates")
 
 
-def map_rows_to_medicos(rows: List[dict]) -> List[ClienteDB]:
+# ==================== FUNCIONES AUXILIARES ====================
+
+def map_rows_to_medicos(rows: List[dict]) -> List[MedicoDB]:
     """
-    Convierte las filas del SELECT * FROM clientes (dict) 
-    en objetos ClienteDB (sin validaciones estrictas para datos existentes).
+    Convierte las filas del SELECT de medicos (dict) 
+    en objetos MedicoDB.
     """
     return [
-        ClienteDB(
+        MedicoDB(
             id=row["id_medico"],
             nombre=row["nombre"],
-            especilidad=row["especialidad"],
+            especialidad=row["especialidad"],
             email=row["correo_interno"],
         )
         for row in rows
     ]
 
 
-# --- GET principal ---
+def map_row_to_medico(row: dict) -> MedicoDB:
+    """
+    Convierte una fila individual a MedicoDB.
+    """
+    return MedicoDB(
+        id=row["id_medico"],
+        nombre=row["nombre"],
+        especialidad=row["especialidad"],
+        email=row["correo_interno"],
+    )
+
+
+# ==================== ENDPOINTS ====================
+
+# --- GET página principal ---
 @app.get("/", response_class=HTMLResponse)
 def get_index(request: Request):
-    # 1️⃣ Obtenemos los datos desde MySQL
+    """Página principal con listado de médicos."""
     rows = fetch_all_medicos()
-
-    # 2️⃣ Convertimos cada fila a Cliente (valida estructura)
     medicos = map_rows_to_medicos(rows)
-
-    # 3️⃣ Enviamos a la plantilla
+    
     return templates.TemplateResponse(
         "pages/index.html",
         {
@@ -113,19 +122,20 @@ def get_index(request: Request):
     )
 
 
-# --- GET formulario nuevo cliente ---
+# --- GET formulario nuevo médico ---
 @app.get("/medico/nuevo", response_class=HTMLResponse)
 def get_nuevo_medico(request: Request):
+    """Muestra formulario para crear nuevo médico."""
     return templates.TemplateResponse(
         "pages/nuevo_medico.html",
         {
             "request": request,
-            "mensaje": None
+            "errores": None
         }
     )
 
 
-# --- POST guardar nuevo cliente ---
+# --- POST guardar nuevo médico ---
 @app.post("/medico/nuevo")
 def post_nuevo_medico(
     request: Request,
@@ -133,22 +143,23 @@ def post_nuevo_medico(
     especialidad: str = Form(...),
     email: str = Form(...)
 ):
+    """Procesa el formulario y guarda nuevo médico."""
     try:
         # Validamos los datos usando Pydantic
-        cliente_data = ClienteCreate(
+        medico_data = MedicoCreate(
             nombre=nombre,
             especialidad=especialidad,
             email=email
         )
         
-        # Insertamos el cliente en la base de datos
+        # Insertamos en la base de datos
         insert_medico(
-            cliente_data.nombre,
-            cliente_data.especialidad,
-            cliente_data.email,
+            medico_data.nombre,
+            medico_data.especialidad,
+            medico_data.email
         )
         
-        # Redirigimos al inicio para ver el listado actualizado
+        # Redirigimos al inicio
         return RedirectResponse(url="/", status_code=303)
         
     except ValidationError as e:
@@ -161,92 +172,69 @@ def post_nuevo_medico(
         
         # Mostramos el formulario con los errores
         return templates.TemplateResponse(
-            "pages/nuevo_cliente.html",
+            "pages/nuevo_medico.html",
             {
                 "request": request,
-                "mensaje": None,
                 "errores": errores,
                 "nombre": nombre,
                 "especialidad": especialidad,
-                "correo_interno": email
+                "email": email
             },
             status_code=422
         )
 
 
-# --- DELETE eliminar cliente ---
-@app.delete("/medico/{cliente_id}")
-def delete_cliente_endpoint(cliente_id: int):
-    """
-    Endpoint para eliminar un cliente por su ID.
-    """
-    eliminado = delete_medico(cliente_id)
+# --- GET formulario editar médico ---
+@app.get("/medico/editar/{medico_id}", response_class=HTMLResponse)
+def get_editar_medico(request: Request, medico_id: int):
+    """Muestra formulario de edición con datos precargados."""
+    medico_data = fetch_medico_by_id(medico_id)
     
-    if not eliminado:
-        raise HTTPException(status_code=404, detail="Medico no encontrado")
+    if not medico_data:
+        raise HTTPException(status_code=404, detail="Médico no encontrado")
     
-    return JSONResponse(
-        content={"mensaje": "Medico eliminado exitosamente"},
-        status_code=200
-    )
-
-
-# --- GET formulario editar cliente ---
-@app.get("/medico/editar/{cliente_id}", response_class=HTMLResponse)
-def get_editar_cliente(request: Request, cliente_id: int):
-    """
-    Endpoint para mostrar el formulario de edición con datos precargados.
-    """
-    # Obtenemos los datos del cliente
-    cliente_data = fetch_cliente_by_id(cliente_id)
-    
-    if not cliente_data:
-        raise HTTPException(status_code=404, detail="Medico no encontrado")
-    
-    # Convertimos a modelo ClienteDB para mostrar en formulario (sin validaciones)
-    cliente = ClienteDB(**cliente_data)
+    medico = map_row_to_medico(medico_data)
     
     return templates.TemplateResponse(
         "pages/editar_medico.html",
         {
             "request": request,
-            "medico": cliente
+            "medico": medico,
+            "errores": None
         }
     )
 
 
-# --- POST actualizar cliente ---
-@app.post("/medico/editar/{cliente_id}")
-def post_editar_cliente(
+# --- POST actualizar médico ---
+@app.post("/medico/editar/{medico_id}")
+def post_editar_medico(
     request: Request,
-    cliente_id: int,
+    medico_id: int,
     nombre: str = Form(...),
     especialidad: str = Form(...),
     email: str = Form(...)
 ):
-    """
-    Endpoint para actualizar los datos de un cliente.
-    """
+    """Procesa el formulario y actualiza el médico."""
     try:
         # Validamos los datos usando Pydantic
-        cliente_data = ClienteUpdate(
+        medico_data = MedicoUpdate(
             nombre=nombre,
             especialidad=especialidad,
             email=email
         )
         
-        # Actualizamos el cliente en la base de datos
-        actualizado = update_cliente(
-            cliente_id,
-            cliente_data.nombre,
-            cliente_data.especialidad,
-            cliente_data.email,
+        # Actualizamos en la base de datos
+        actualizado = update_medico(
+            medico_id,
+            medico_data.nombre,
+            medico_data.especialidad,
+            medico_data.email
         )
         
         if not actualizado:
-            raise HTTPException(status_code=404, detail="Medico no encontrado")
+            raise HTTPException(status_code=404, detail="Médico no encontrado")
         
-        # Redirigimos al inicio para ver el listado actualizado
+        # Redirigimos al inicio
         return RedirectResponse(url="/", status_code=303)
         
     except ValidationError as e:
@@ -257,21 +245,35 @@ def post_editar_cliente(
             mensaje = error['msg']
             errores.append(f"{campo.capitalize()}: {mensaje}")
         
-        # Creamos un objeto cliente temporal para mostrar en el formulario
-        cliente_temp = ClienteDB(
-            id=cliente_id,
+        # Creamos objeto temporal para mostrar en el formulario
+        medico_temp = MedicoDB(
+            id=medico_id,
             nombre=nombre,
             especialidad=especialidad,
-            email=email,
+            email=email
         )
         
-        # Mostramos el formulario con los errores
         return templates.TemplateResponse(
             "pages/editar_medico.html",
             {
                 "request": request,
-                "cliente": cliente_temp,
+                "medico": medico_temp,
                 "errores": errores
             },
             status_code=422
         )
+
+
+# --- DELETE eliminar médico ---
+@app.delete("/medico/{medico_id}")
+def delete_medico_endpoint(medico_id: int):
+    """Endpoint para eliminar un médico por su ID."""
+    eliminado = delete_medico(medico_id)
+    
+    if not eliminado:
+        raise HTTPException(status_code=404, detail="Médico no encontrado")
+    
+    return JSONResponse(
+        content={"mensaje": "Médico eliminado exitosamente"},
+        status_code=200
+    )

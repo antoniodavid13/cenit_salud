@@ -133,11 +133,12 @@
         </div>
     </section>
 
-    <!-- DOCTORS SECTION -->
-<section class="doctors-section" id="doctores">
+    <!-- DOCTORS SECTION - DINÁMICO CON JINJA2 -->
+    <section class="doctors-section" id="doctores">
         <div class="section-header">
             <span class="section-tag">Nuestro Equipo</span>
             <h2 class="section-title">Especialistas Certificados</h2>
+            <p class="section-subtitle">Conoce a nuestro equipo de profesionales de la salud.</p>
             <div style="margin-top: 20px;">
                 <a href="/medico/nuevo" class="btn-primary" style="padding: 10px 20px;">+ Añadir Nuevo Médico</a>
             </div>
@@ -146,51 +147,41 @@
         <div class="doctors-carousel-container">
             <div class="doctors-carousel" id="doctorsCarousel">
                 
-                <div class="doctor-card" id="medico-1">
+                <!-- Si no hay médicos -->
+                {% if not medicos %}
+                <div class="no-medicos-message">
+                    <p>No hay médicos registrados aún.</p>
+                    <a href="/medico/nuevo" class="btn-secondary">Añadir el primer médico</a>
+                </div>
+                {% endif %}
+                
+                <!-- Iteración sobre los médicos de la BD (similar a th:each en Thymeleaf) -->
+                {% for medico in medicos %}
+                <div class="doctor-card" id="medico-{{ medico.id }}">
                     <div class="doctor-image">
                         👩‍⚕️
                     </div>
-                    <h3>Juan</h3>
-                    <p class="doctor-specialty">Cardiología</p>
+                    <h3>{{ medico.nombre }}</h3>
+                    <p class="doctor-specialty">{{ medico.especialidad }}</p>
+                    <p class="doctor-email">{{ medico.email }}</p>
                     
-
-                </div>
-                                <div class="doctor-card" id="medico-1">
-                    <div class="doctor-image">
-                        👩‍⚕️
+                    <!-- Botones de acción -->
+                    <div class="doctor-actions">
+                        <a href="/medico/editar/{{ medico.id }}" class="btn-edit" title="Editar">✏️</a>
+                        <button onclick="eliminarMedico({{ medico.id }})" class="btn-delete" title="Eliminar">🗑️</button>
                     </div>
-                    <h3>Juan</h3>
-                    <p class="doctor-specialty">Cardiología</p>
-                    
-
                 </div>
-                                <div class="doctor-card" id="medico-1">
-                    <div class="doctor-image">
-                        👩‍⚕️
-                    </div>
-                    <h3>Juan</h3>
-                    <p class="doctor-specialty">Cardiología</p>
-                    
-
-                </div>
-                                <div class="doctor-card" id="medico-1">
-                    <div class="doctor-image">
-                        👩‍⚕️
-                    </div>
-                    <h3>Juan</h3>
-                    <p class="doctor-specialty">Cardiología</p>
-                    
-
-                </div>
+                {% endfor %}
 
             </div>
-            
         </div>
         
+        {% if medicos|length > 3 %}
         <div class="carousel-nav">
             <button class="carousel-btn" onclick="moveDoctorsCarousel(-1)">←</button>
             <button class="carousel-btn" onclick="moveDoctorsCarousel(1)">→</button>
         </div>
+        {% endif %}
     </section>
 
     <!-- TESTIMONIALS SECTION -->
@@ -334,6 +325,7 @@
             <p>© 2026 VitaClinic. Todos los derechos reservados. | Política de Privacidad | Términos de Servicio</p>
         </div>
     </footer>
+    
     <script src="/static/js/main.js"></script>
 </body>
 </html>
