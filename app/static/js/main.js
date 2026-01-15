@@ -429,5 +429,54 @@ document.addEventListener('DOMContentLoaded', function() {
 
         statsObserver.observe(statsSection);
     }
+    // Función para eliminar médico
 
 });
+async function eliminarMedico(id) {
+    if (confirm('¿Estás seguro de que deseas eliminar a este especialista?')) {
+        try {
+            const response = await fetch(`/medico/eliminar/${id}`, {
+                method: 'DELETE',
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.ok) {
+                const card = document.getElementById(`medico-${id}`);
+                if (card) {
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.8)';
+                    setTimeout(() => {
+                        card.remove();
+                        // Recargar si no quedan tarjetas para mostrar el estado vacío
+                        if (document.querySelectorAll('.doctor-card').length === 0) {
+                            location.reload(); 
+                        }
+                    }, 300);
+                }
+            } else {
+                alert('Error al eliminar: ' + (result.message || 'Error desconocido'));
+            }
+        } catch (error) {
+            alert('Error de conexión con el servidor');
+        }
+    }
+}
+
+// Lógica para que el carrusel no bloquee los botones
+let currentSlide = 0;
+function moveDoctorsCarousel(direction) {
+    const container = document.getElementById('doctorsCarousel');
+    const cards = document.querySelectorAll('.doctor-card');
+    if (cards.length === 0) return;
+
+    currentSlide += direction;
+    
+    // Evitar que se salga de los límites
+    if (currentSlide < 0) currentSlide = 0;
+    if (currentSlide >= cards.length) currentSlide = cards.length - 1;
+
+    const move = currentSlide * -320; // Ancho de la tarjeta + gap
+    container.style.transform = `translateX(${move}px)`;
+}
+

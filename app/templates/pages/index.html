@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
-<body>
+<body>      
     <!-- NAVBAR -->
     <nav class="navbar">
         <a href="#" class="navbar-logo">
@@ -139,42 +139,48 @@
             <span class="section-tag">Nuestro Equipo</span>
             <h2 class="section-title">Especialistas Certificados</h2>
             <p class="section-subtitle">Conoce a nuestro equipo de profesionales de la salud.</p>
-            <div style="margin-top: 20px;">
-                <a href="/medico/nuevo" class="btn-primary" style="padding: 10px 20px;">+ Añadir Nuevo Médico</a>
-            </div>
+
         </div>
+
+
 
         <div class="doctors-carousel-container">
             <div class="doctors-carousel" id="doctorsCarousel">
+
                 
                 <!-- Si no hay médicos -->
                 {% if not medicos %}
-                <div class="no-medicos-message">
-                    <p>No hay médicos registrados aún.</p>
-                    <a href="/medico/nuevo" class="btn-secondary">Añadir el primer médico</a>
+                <div class="no-medicos-message" style="text-align: center; width: 100%; padding: 40px;">
+                    <p>No hay médicos registrados en el sistema.</p>
                 </div>
                 {% endif %}
                 
                 <!-- Iteración sobre los médicos de la BD (similar a th:each en Thymeleaf) -->
                 {% for medico in medicos %}
                 <div class="doctor-card" id="medico-{{ medico.id }}">
-                    <div class="doctor-image">
-                        👩‍⚕️
-                    </div>
+                    <div class="doctor-image">👩‍⚕️</div>
                     <h3>{{ medico.nombre }}</h3>
                     <p class="doctor-specialty">{{ medico.especialidad }}</p>
                     <p class="doctor-email">{{ medico.email }}</p>
                     
-                    <!-- Botones de acción -->
                     <div class="doctor-actions">
-                        <a href="/medico/editar/{{ medico.id }}" class="btn-edit" title="Editar">✏️</a>
-                        <button onclick="eliminarMedico({{ medico.id }})" class="btn-delete" title="Eliminar">🗑️</button>
+                        <a href="/medico/editar/{{ medico.id }}" class="btn-edit" style="text-decoration:none; margin-right:10px;">✏️ Editar</a>
+                        
+                        <button type="button" 
+                                class="btn-delete" 
+                                onclick="eliminarMedico('{{ medico.id }}')">
+                            Eliminar
+                        </button>
+                        <a href="/medico/nuevo" class="btn-edit" style="text-decoration:none; margin-right:10px;">✏️ Añadir</a>
+
                     </div>
                 </div>
                 {% endfor %}
 
+
             </div>
         </div>
+
         
         {% if medicos|length > 3 %}
         <div class="carousel-nav">
@@ -183,6 +189,7 @@
         </div>
         {% endif %}
     </section>
+
 
     <!-- TESTIMONIALS SECTION -->
     <section class="testimonials-section" id="testimonios">

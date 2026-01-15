@@ -1255,94 +1255,273 @@ margin: 0;
     border-radius: 20px;
     color: white;
 }
-.btn-primary-admin {
+/* --------------------------------------------
+   BOTONES DEL FORMULARIO (ESTILO VITACLINIC)
+   -------------------------------------------- */
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Botón Actualizar - Basado en tu .navbar-cta */
+.medico-form .btn-primary {
+    flex: 2;
     background: linear-gradient(135deg, var(--green-600), var(--green-700));
-    color: white !important;
-    padding: 14px 28px;
-    border-radius: 50px;
+    color: white;
+    padding: 16px 32px;
+    border-radius: 50px; /* Estilo píldora como tu navbar */
     text-decoration: none;
     font-weight: 600;
     font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    box-shadow: 0 10px 20px rgba(22, 163, 74, 0.2);
-    transition: all 0.3s ease;
-    border: none;
+    justify-content: center;
 }
 
-.btn-primary-admin:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 30px rgba(22, 163, 74, 0.3);
+.medico-form .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(22, 163, 74, 0.4);
     background: linear-gradient(135deg, var(--green-500), var(--green-600));
 }
 
-.plus-icon {
-    font-size: 1.2rem;
-    background: rgba(255, 255, 255, 0.2);
-    width: 24px;
-    height: 24px;
-    display: flex;
+/* Botón Cancelar - Basado en tu .btn-secondary del Hero */
+.medico-form .btn-secondary {
+    flex: 1;
+    background: transparent;
+    color: var(--green-700);
+    padding: 16px 32px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    border: 2px solid var(--green-200);
+    transition: var(--transition-fast);
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-}
-.btn-primary-admin {
-    display: inline-block;
-    background-color: #16a34a; /* Verde VitaClinic */
-    color: white !important;
-    padding: 12px 24px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    margin-bottom: 20px;
-    transition: background 0.3s;
 }
 
-.btn-primary-admin:hover {
-    background-color: #15803d;
-}
-/* La tarjeta contenedora del botón */
-.add-card-placeholder {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    min-height: 300px; /* Altura similar a las otras tarjetas */
-    background: rgba(22, 163, 74, 0.05) !important; /* Un verde muy sutil */
-    border: 2px dashed #16a34a !important; /* Borde punteado estilo "añadir" */
-    box-shadow: none !important;
-    width: 300px !important; /* Ancho fijo para que no colapse */
+.medico-form .btn-secondary:hover {
+    background: var(--green-50);
+    border-color: var(--green-600);
+    color: var(--green-800);
 }
 
-/* Contenedor interno del botón */
-.add-doctor-content {
+/* Ajuste para móviles */
+@media (max-width: 480px) {
+    .form-actions {
+        flex-direction: column;
+    }
+    .medico-form .btn-primary, 
+    .medico-form .btn-secondary {
+        width: 100%;
+    }
+}
+/* ============================================
+   VITACLINIC - ESTILOS FORMULARIOS (MÉDICOS)
+   ============================================ */
+
+/* Reutilizamos tus variables para mantener consistencia */
+:root {
+    --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: 0.3s ease;
+}
+
+body {
+    background-color: var(--cream);
+    padding-top: 120px; /* Espacio para la navbar fija */
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+/* --------------------------------------------
+   CONTENEDOR PRINCIPAL (Estilo Mantenimiento)
+   -------------------------------------------- */
+.form-section {
     width: 100%;
-}
-
-/* Estilo del botón para que sea más grande y fácil de pulsar */
-.btn-primary-admin {
-    background-color: #16a34a;
-    color: white;
-    padding: 15px 25px;
-    border-radius: 50px;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
     display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: transform 0.2s, background 0.3s;
+    justify-content: center;
+    padding: 40px 20px;
 }
 
-.btn-primary-admin:hover {
-    background-color: #15803d;
-    transform: scale(1.05);
+.form-container {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 40px;
+    border: 1px solid rgba(22, 163, 74, 0.15);
+    box-shadow: 0 25px 50px -12px rgba(22, 163, 74, 0.1);
+    padding: 60px 40px;
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
 }
 
-.plus-icon {
-    font-size: 1.5rem;
-    line-height: 1;
+.form-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--green-900);
+    margin-bottom: 10px;
+    letter-spacing: -1px;
+}
+
+.form-header p {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 30px;
+}
+
+.back-link {
+    display: inline-block;
+    color: var(--green-600);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    transition: var(--transition-fast);
+}
+
+.back-link:hover {
+    transform: translateX(-5px);
+    color: var(--green-800);
+}
+
+/* --------------------------------------------
+   CAMPOS DEL FORMULARIO
+   -------------------------------------------- */
+.medico-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    text-align: left; /* Etiquetas a la izquierda */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: var(--green-900);
+    font-size: 0.9rem;
+    padding-left: 5px;
+}
+
+.form-group input {
+    padding: 16px 24px;
+    border-radius: 100px; /* Siguiendo el estilo de los botones */
+    border: 1px solid rgba(22, 163, 74, 0.2);
+    background: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    transition: var(--transition-smooth);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--green-500);
+    box-shadow: 0 0 0 4px var(--green-100);
+    background: var(--green-50);
+}
+
+/* --------------------------------------------
+   BOTONES DE ACCIÓN
+   -------------------------------------------- */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+/* Reutilizando tu estilo .navbar-cta y .btn-secondary */
+.form-actions .btn-primary {
+    flex: 2;
+    background: linear-gradient(135deg, var(--green-600), var(--green-700));
+    color: white;
+    padding: 16px;
+    border-radius: 100px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(22, 163, 74, 0.3);
+    transition: var(--transition-fast);
+}
+
+.form-actions .btn-secondary {
+    flex: 1;
+    background: white;
+    color: var(--green-700);
+    border: 2px solid var(--green-100);
+    padding: 16px;
+    border-radius: 100px;
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600;
+    transition: var(--transition-fast);
+}
+
+.form-actions .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(22, 163, 74, 0.4);
+}
+
+.form-actions .btn-secondary:hover {
+    background: var(--green-50);
+    border-color: var(--green-200);
+}
+
+/* --------------------------------------------
+   MENSAJES DE ERROR
+   -------------------------------------------- */
+.error-box {
+    background: #fff5f5;
+    border: 1px solid #feb2b2;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.error-box h4 {
+    color: #c53030;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+.error-box ul {
+    list-style: none;
+    color: #9b2c2c;
+    font-size: 0.9rem;
+}
+
+/* --------------------------------------------
+   FOOTER SIMPLE
+   -------------------------------------------- */
+.footer-simple {
+    margin-top: auto;
+    width: 100%;
+    padding: 40px;
+    text-align: center;
+    color: var(--green-900);
+    opacity: 0.6;
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .form-container {
+        padding: 40px 25px;
+    }
+    .form-actions {
+        flex-direction: column;
+    }
 }

@@ -184,28 +184,21 @@ def post_nuevo_medico(
         )
 
 
-# --- GET formulario editar médico ---
+# --- GET: Cargar formulario de edición ---
 @app.get("/medico/editar/{medico_id}", response_class=HTMLResponse)
 def get_editar_medico(request: Request, medico_id: int):
-    """Muestra formulario de edición con datos precargados."""
-    medico_data = fetch_medico_by_id(medico_id)
-    
-    if not medico_data:
+    row = fetch_medico_by_id(medico_id)
+    if not row:
         raise HTTPException(status_code=404, detail="Médico no encontrado")
     
-    medico = map_row_to_medico(medico_data)
-    
-    return templates.TemplateResponse(
-        "pages/editar_medico.html",
-        {
-            "request": request,
-            "medico": medico,
-            "errores": None
-        }
-    )
+    medico = map_row_to_medico(row)
+    return templates.TemplateResponse("pages/editar_medico.html", {
+        "request": request,
+        "medico": medico,
+        "errores": None
+    })
 
-
-# --- POST actualizar médico ---
+# --- POST: Procesar la edición ---
 @app.post("/medico/editar/{medico_id}")
 def post_editar_medico(
     request: Request,
@@ -214,66 +207,24 @@ def post_editar_medico(
     especialidad: str = Form(...),
     email: str = Form(...)
 ):
-    """Procesa el formulario y actualiza el médico."""
     try:
-        # Validamos los datos usando Pydantic
-        medico_data = MedicoUpdate(
-            nombre=nombre,
-            especialidad=especialidad,
-            email=email
-        )
-        
-        # Actualizamos en la base de datos
-        actualizado = update_medico(
-            medico_id,
-            medico_data.nombre,
-            medico_data.especialidad,
-            medico_data.email
-        )
-        
-        if not actualizado:
-            raise HTTPException(status_code=404, detail="Médico no encontrado")
-        
-        # Redirigimos al inicio
-        return RedirectResponse(url="/", status_code=303)
-        
+        # Validar datos
+        medico_valido = MedicoUpdate(nombre=nombre, especialidad=especialidad, email=email)
+        # Actualizar en DB
+        update_medico(medico_id, medico_valido.nombre, medico_valido.especialidad, medico_valido.email)
+        return RedirectResponse(url="/#doctores", status_code=303)
     except ValidationError as e:
-        # Extraemos los errores de validación
-        errores = []
-        for error in e.errors():
-            campo = str(error['loc'][0]) if error['loc'] else 'campo'
-            mensaje = error['msg']
-            errores.append(f"{campo.capitalize()}: {mensaje}")
-        
-        # Creamos objeto temporal para mostrar en el formulario
-        medico_temp = MedicoDB(
-            id=medico_id,
-            nombre=nombre,
-            especialidad=especialidad,
-            email=email
-        )
-        
-        return templates.TemplateResponse(
-            "pages/editar_medico.html",
-            {
-                "request": request,
-                "medico": medico_temp,
-                "errores": errores
-            },
-            status_code=422
-        )
+        errores = [f"{err['loc'][0]}: {err['msg']}" for err in e.errors()]
+        return templates.TemplateResponse("pages/editar_medico.html", {
+            "request": request,
+            "medico": {"id": medico_id, "nombre": nombre, "especialidad": especialidad, "email": email},
+            "errores": errores
+        })
 
-
-# --- DELETE eliminar médico ---
-@app.delete("/medico/{medico_id}")
-def delete_medico_endpoint(medico_id: int):
-    """Endpoint para eliminar un médico por su ID."""
-    eliminado = delete_medico(medico_id)
-    
-    if not eliminado:
-        raise HTTPException(status_code=404, detail="Médico no encontrado")
-    
-    return JSONResponse(
-        content={"mensaje": "Médico eliminado exitosamente"},
-        status_code=200
-    )
+# --- DELETE: Borrar médico ---
+@app.delete("/medico/eliminar/{medico_id}")
+def endpoint_eliminar_medico(medico_id: int):
+    exito = delete_medico(medico_id)
+    if exito:
+        return {"ok": True}
+    return JSONResponse(status_code=404, content={"ok": False, "message": "No se encontró el médico"})
