@@ -49,6 +49,6 @@ Si el servidor de base de datos no está disponible o la conexión falla, el sis
    Crea un archivo `.env` con los datos de tu MySQL:
    ```env
    DB_HOST=localhost
-   DB_USER
+   DB_USER=
    DB_PASSWORD=
    DB_NAME=cenit_salud_db
