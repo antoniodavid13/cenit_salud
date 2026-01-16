@@ -1,0 +1,124 @@
+:root {
+    --primary-color: #6C63FF; /* Un morado vibrante */
+    --text-color: #333;
+    --light-text-color: #666;
+    --background-color: #f9f9f9;
+    --white-color: #fff;
+    --button-hover-color: #554cd8;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    text-align: center;
+    overflow: hidden; /* Evita barras de desplazamiento si hay animaciones fuera de la vista */
+}
+
+.container {
+    padding: 40px;
+    border-radius: 12px;
+    background-color: var(--white-color);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 90%;
+    animation: fadeIn 1s ease-out;
+}
+
+.error-code {
+    font-size: 120px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+    animation: bounce 2s infinite ease-in-out;
+}
+
+.error-code::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 10px;
+    background: rgba(108, 99, 255, 0.2); /* Sombra sutil para el efecto de rebote */
+    border-radius: 50%;
+    filter: blur(5px);
+}
+
+h1 {
+    font-size: 2.5em;
+    color: var(--text-color);
+    margin-bottom: 15px;
+}
+
+p {
+    font-size: 1.1em;
+    color: var(--light-text-color);
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.home-button {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    padding: 12px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+}
+
+.home-button:hover {
+    background-color: var(--button-hover-color);
+    transform: translateY(-2px);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .error-code {
+        font-size: 90px;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    p {
+        font-size: 1em;
+    }
+
+    .container {
+        padding: 30px 20px;
+    }
+}

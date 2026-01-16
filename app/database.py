@@ -6,14 +6,29 @@ from typing import List, Dict, Any, cast
 load_dotenv(find_dotenv())
 
 def get_connection():
-    return mysql.connector.connect(
-        host=os.getenv("DB_HOST", "localhost"),
-        user=os.getenv("DB_USER", "root"),
-        password=os.getenv("DB_PASSWORD", ""),
-        database=os.getenv("DB_NAME", "cenit_salud_db"),
-        port=int(os.getenv("DB_PORT", "3306")),
-        charset="utf8mb4"
-    )
+        return mysql.connector.connect(
+            host=os.getenv("DB_HOST", "localhost"),
+            user=os.getenv("DB_USER", "root"),
+            password=os.getenv("DB_PASSWORD", ""),
+            database=os.getenv("DB_NAME", "cenit_salud_db"),
+            port=int(os.getenv("DB_PORT", "3306")),
+            charset="utf8mb4"
+        )
+def email_exists(email: str, exclude_id: int = None) -> bool:
+    """Comprueba si el email ya está registrado."""
+    conn = None
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        if exclude_id:
+            # Útil para cuando editas un médico y no quieres que choque con su propio correo
+            cur.execute("SELECT id_medico FROM medicos WHERE correo_interno = %s AND id_medico != %s", (email, exclude_id))
+        else:
+            cur.execute("SELECT id_medico FROM medicos WHERE correo_interno = %s", (email,))
+        
+        return cur.fetchone() is not None
+    finally:
+        if conn: conn.close()
 
 def fetch_all_medicos() -> List[Dict[str, Any]]:
     conn = None
@@ -30,6 +45,9 @@ def fetch_all_medicos() -> List[Dict[str, Any]]:
             conn.close()
 
 def insert_medico(nombre: str, especialidad: str, email: str) -> int:
+    if email_exists(email):
+        raise ValueError(f"El correo {email} ya está registrado.")
+        
     conn = None
     try:
         conn = get_connection()
@@ -81,6 +99,9 @@ def fetch_medico_by_id(medico_id: int) -> Dict[str, Any] | None:
             conn.close()
 
 def update_medico(medico_id: int, nombre: str, especialidad: str, email: str) -> bool:
+    if email_exists(email, exclude_id=medico_id):
+        raise ValueError(f"El correo {email} ya pertenece a otro médico.")
+        
     conn = None
     try:
         conn = get_connection()

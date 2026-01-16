@@ -105,21 +105,32 @@ def map_row_to_medico(row: dict) -> MedicoDB:
 
 
 # ==================== ENDPOINTS ====================
-
-# --- GET página principal ---
 @app.get("/", response_class=HTMLResponse)
-def get_index(request: Request):
-    """Página principal con listado de médicos."""
-    rows = fetch_all_medicos()
-    medicos = map_rows_to_medicos(rows)
+async def get_index(request: Request):
+    try:
+        """Página principal con listado de médicos."""
+        rows = fetch_all_medicos()
+        medicos = map_rows_to_medicos(rows)
+        
+        return templates.TemplateResponse(
+            "pages/index.html",
+            {
+                "request": request,
+                "medicos": medicos
+            }
+        )
+    except Exception as e:
+        # Aquí puedes imprimir el error en consola para saber qué falló
+        print(f"Error detectado: {e}")
+        
+        # Devolvemos la página 404 (o una de 500 Error Interno)
+        return templates.TemplateResponse(
+            "pages/404.html", 
+            {"request": request},
+            status_code=404
+        )
     
-    return templates.TemplateResponse(
-        "pages/index.html",
-        {
-            "request": request,
-            "medicos": medicos
-        }
-    )
+        
 
 
 # --- GET formulario nuevo médico ---
@@ -137,52 +148,28 @@ def get_nuevo_medico(request: Request):
 
 # --- POST guardar nuevo médico ---
 @app.post("/medico/nuevo")
-def post_nuevo_medico(
-    request: Request,
-    nombre: str = Form(...),
-    especialidad: str = Form(...),
-    email: str = Form(...)
-):
-    """Procesa el formulario y guarda nuevo médico."""
+def post_nuevo_medico(request: Request, nombre: str = Form(...), especialidad: str = Form(...), email: str = Form(...)):
     try:
-        # Validamos los datos usando Pydantic
-        medico_data = MedicoCreate(
-            nombre=nombre,
-            especialidad=especialidad,
-            email=email
-        )
+        # Tu validación de Pydantic existente...
+        medico_data = MedicoCreate(nombre=nombre, especialidad=especialidad, email=email)
         
-        # Insertamos en la base de datos
-        insert_medico(
-            medico_data.nombre,
-            medico_data.especialidad,
-            medico_data.email
-        )
-        
-        # Redirigimos al inicio
+        # Intentamos insertar
+        insert_medico(medico_data.nombre, medico_data.especialidad, medico_data.email)
         return RedirectResponse(url="/", status_code=303)
         
-    except ValidationError as e:
-        # Extraemos los errores de validación
-        errores = []
-        for error in e.errors():
-            campo = str(error['loc'][0]) if error['loc'] else 'campo'
-            mensaje = error['msg']
-            errores.append(f"{campo.capitalize()}: {mensaje}")
-        
-        # Mostramos el formulario con los errores
+    except ValueError as e:
+        # Aquí capturamos el error del correo duplicado
         return templates.TemplateResponse(
             "pages/nuevo_medico.html",
             {
                 "request": request,
-                "errores": errores,
+                "errores": [str(e)],
                 "nombre": nombre,
                 "especialidad": especialidad,
                 "email": email
             },
-            status_code=422
+            status_code=400
         )
-
 
 # --- GET: Cargar formulario de edición ---
 @app.get("/medico/editar/{medico_id}", response_class=HTMLResponse)
@@ -208,15 +195,25 @@ def post_editar_medico(
     email: str = Form(...)
 ):
     try:
-        # Validar datos
+        # 1. Validar formato con Pydantic
         medico_valido = MedicoUpdate(nombre=nombre, especialidad=especialidad, email=email)
-        # Actualizar en DB
+        
+        # 2. Actualizar en DB (aquí puede saltar el ValueError del correo)
         update_medico(medico_id, medico_valido.nombre, medico_valido.especialidad, medico_valido.email)
+        
         return RedirectResponse(url="/#doctores", status_code=303)
-    except ValidationError as e:
-        errores = [f"{err['loc'][0]}: {err['msg']}" for err in e.errors()]
+
+    except (ValidationError, ValueError) as e:
+        # Capturamos ambos tipos de errores
+        if isinstance(e, ValidationError):
+            errores = [f"{err['loc'][0].capitalize()}: {err['msg']}" for err in e.errors()]
+        else:
+            # Es el ValueError de la base de datos
+            errores = [str(e)]
+            
         return templates.TemplateResponse("pages/editar_medico.html", {
             "request": request,
+            # Importante: pasar el ID correcto para que el formulario sepa a quién editar si falla
             "medico": {"id": medico_id, "nombre": nombre, "especialidad": especialidad, "email": email},
             "errores": errores
         })
